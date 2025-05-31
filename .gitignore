@@ -1,0 +1,6 @@
+# python stuff
+__pycache__/
+*.py[cod]
+
+# reports
+report.html
