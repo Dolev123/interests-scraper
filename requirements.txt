@@ -4,3 +4,5 @@ BeautifulSoup4
 loguru
 jinja2
 pydantic
+feedparser
+tqdm

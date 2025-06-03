@@ -2,6 +2,7 @@ import jinja2
 
 import youtube
 import mastodon
+import rssfeed
 
 def create_report(sources: list):
     enviroment = jinja2.Environment(loader=jinja2.FileSystemLoader("./"))
@@ -18,6 +19,7 @@ def main():
     sources = [
         youtube.list_videos(),
         mastodon.list_toots(),
+        rssfeed.list_feeds(),
     ]
     create_report(sources)
 

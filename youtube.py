@@ -1,5 +1,6 @@
 import requests
 import xmltodict
+from tqdm import tqdm
 from loguru import logger
 
 from source import Row, Group, Source
@@ -32,10 +33,10 @@ def list_channel_videos(channel_id: str) -> list:
     return videos
 
 def list_videos():
-    print("YOUTUBE")
+    # print("YOUTUBE")
     channels = []
-    for name, cid in CHANNELS.items():
-        print(f"{name}:")
+    for name, cid in tqdm(CHANNELS.items(), desc="YouTube"):
+        # print(f"{name}:")
         channel = Group(name=name)
         for video in list_channel_videos(cid):
             channel.rows.append(Row(
@@ -43,7 +44,7 @@ def list_videos():
                 date=video[1],
                 url=video[2],
             ))
-            print(" | ".join(video))
+            # print(" | ".join(video))
         channels.append(channel)
-        print()
+        # print()
     return Source(name="YouTube", groups=channels)

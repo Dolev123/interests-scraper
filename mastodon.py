@@ -4,6 +4,7 @@ import requests
 import json
 from loguru import logger
 from bs4 import BeautifulSoup 
+from tqdm import tqdm
 
 from source import Source, Group, Row
 
@@ -69,20 +70,16 @@ def list_user_toots(server: str, user: str) -> list:
     return toots
 
 def list_toots():
-    print("MASTODON")
     toots = []
     accounts = []
-    for server, users in SERVERS_AND_USERS.items():
+    for server, users in tqdm(SERVERS_AND_USERS.items(), desc="Mastodon"):
         for user in users:
             account = Group(name=f"{user}@{server}")
-            print(f"{user}@{server}:")
             for toot in list_user_toots(server, user):
                 account.rows.append(Row(
                     title=toot[0],
                     date=toot[1],
                     url=toot[2],
                 ))
-                print(" | ".join(toot))
             accounts.append(account)
-            print()
     return Source(name="Mastodon", groups=accounts)
