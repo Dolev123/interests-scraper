@@ -1,6 +1,5 @@
 #!/bin/sh
 
-export WORK_DIR=
 export SRV_DIR=/tmp/srv
 
 function check_srv_dir() {
