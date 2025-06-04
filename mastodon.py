@@ -35,8 +35,10 @@ def get_toot_data(toot: dict) -> str:
     elif toot["reblog"]:
         data = toot["reblog"]["content"]
         # return data.split("</p>")[0][len("<p>"):]
+    elif toot["media_attachments"]:
+        return "-Mystery-Toot-"
     else:
-        logger.warn(f"Failed to get toot's data {toot['id']}")
+        logger.warning(f"Failed to get toot's data {toot['id']}")
         return ""
     soup = BeautifulSoup(data.split("</p>")[0] + "</p>", features="html.parser")
     return soup.get_text()
