@@ -2,6 +2,8 @@ import requests
 import xmltodict
 from tqdm import tqdm
 from loguru import logger
+from datetime import timezone, datetime
+from time import struct_time
 
 from source import Row, Group, Source
 
@@ -13,6 +15,14 @@ CHANNELS = {
 
 VIDEOS_LIST_URL="https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
 
+def _create_time_filter():
+    now = datetime.now(timezone.utc)
+    def _time_filter(date: str) -> bool:
+        dt = datetime.fromisoformat(date)
+        return abs((now - dt).days) < 5
+        pass
+    return _time_filter
+
 def list_channel_videos(channel_id: str) -> list:
     resp = requests.get(VIDEOS_LIST_URL.format(channel_id=channel_id))                 
     if resp.status_code != 200:
@@ -23,28 +33,33 @@ def list_channel_videos(channel_id: str) -> list:
     entries = obj["feed"]["entry"]
     videos = []
     for entry in entries:
+        
         videos.append((
             entry["title"], 
             entry["published"], 
             entry["media:group"]["media:content"]["@url"],
         ))
-        if len(videos) >= 3:
+        if len(videos) >= 10:
             break
     return videos
 
 def list_videos():
-    # print("YOUTUBE")
+    """
+    Scrape videos of channels stored at CHANNELS, and retrurn them as Source.
+    """
     channels = []
+    _time_filter = _create_time_filter()
     for name, cid in tqdm(CHANNELS.items(), desc="YouTube"):
-        # print(f"{name}:")
         channel = Group(name=name)
         for video in list_channel_videos(cid):
+            if not _time_filter(video[1]):
+                break
             channel.rows.append(Row(
                 title=video[0],
                 date=video[1],
                 url=video[2],
             ))
-            # print(" | ".join(video))
-        channels.append(channel)
+        if len(channel.rows):
+            channels.append(channel)
         # print()
     return Source(name="YouTube", groups=channels)

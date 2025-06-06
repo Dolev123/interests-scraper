@@ -1,5 +1,7 @@
 import feedparser
 from tqdm import tqdm
+from datetime import datetime
+from time import struct_time
 
 from source import Row, Group, Source
 
@@ -27,6 +29,14 @@ FEEDS = [
     "https://feeds.feedburner.com/threatintelligence/pvexyqv7v0v",
 ]
 
+def _create_time_filter():
+    now = datetime.now()
+    def _time_filter(date: struct_time) -> bool:
+        dt = datetime(date.tm_year, date.tm_mon, date.tm_mday)
+        return abs((now - dt).days) < 2
+        pass
+    return _time_filter
+
 def _check_feeds_are_valid():
     for feed_url in FEEDS:
         try:
@@ -41,10 +51,13 @@ def _check_feeds_are_valid():
 
 def list_feeds():
     feeds = []
+    _time_filter = _create_time_filter()
     for feed_url in tqdm(FEEDS, desc="RSS Feeds"):
         parsed = feedparser.parse(feed_url)
         feed = Group(name=parsed.feed.title)
         for entry in parsed.entries:
+            if not _time_filter(entry.published_parsed):
+                break
             feed.rows.append(Row(
                 title=entry.title,
                 date=entry.published,
@@ -53,7 +66,8 @@ def list_feeds():
             if len(feed.rows) >= 10:
                 # continue
                 break
-        feeds.append(feed)
+        if len(feed.rows):
+            feeds.append(feed)
     return Source(name="RSS Feeds", groups=feeds)
 
 if __name__ == '__main__':

@@ -5,6 +5,8 @@ import json
 from loguru import logger
 from bs4 import BeautifulSoup 
 from tqdm import tqdm
+from datetime import timezone, datetime
+from time import struct_time
 
 from source import Source, Group, Row
 
@@ -12,17 +14,40 @@ SERVERS_AND_USERS = {
     "cyberplace.social": [
         "@GossiTheDog",
     ],
+    "infosec.exchange": [
+        "@jimmychappell",
+        "@sirdarckcat",
+        "@_marklech_",
+        "@maldr0id",
+        "@tomchop",
+        "@hackndo",
+        "@imlordofthering",
+        "@sphynx",
+    ],
+    "mas.to": [
+        "@secwolf404",
+    ],
+    "fosstodon.org": [
+        "@atoponce"
+    ],
 }
 
 ACCOUNTS_LOOKUP_URL = "https://{server}/api/v1/accounts/lookup"
 USER_TOOTS_URL = "https://{server}/api/v1/accounts/{user_id}/statuses"
 TOOT_URL = "https://{server}/{user}/{toot_id}"
 
+def _create_time_filter():
+    now = datetime.now(timezone.utc)
+    def _time_filter(date: str) -> bool:
+        dt = datetime.fromisoformat(date)
+        return abs((now - dt).days) < 5
+        pass
+    return _time_filter
+    
 def find_user_id(server: str, user: str) -> str:
     resp = requests.get(ACCOUNTS_LOOKUP_URL.format(server=server), params={"acct": user})
     if resp.status_code != 200:
         logger.error(f"Failed getting user's ID with error {resp.status_code}")
-        # from IPython.terminal.embed import embed; embed()
         return ""
 
     obj = resp.json()
@@ -74,14 +99,18 @@ def list_user_toots(server: str, user: str) -> list:
 def list_toots():
     toots = []
     accounts = []
+    _time_filter = _create_time_filter()
     for server, users in tqdm(SERVERS_AND_USERS.items(), desc="Mastodon"):
         for user in users:
             account = Group(name=f"{user}@{server}")
             for toot in list_user_toots(server, user):
+                if not _time_filter(toot[1]):
+                    break
                 account.rows.append(Row(
                     title=toot[0],
                     date=toot[1],
                     url=toot[2],
                 ))
-            accounts.append(account)
+            if len(account.rows):
+                accounts.append(account)
     return Source(name="Mastodon", groups=accounts)
