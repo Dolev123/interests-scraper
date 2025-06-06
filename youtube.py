@@ -11,6 +11,12 @@ CHANNELS = {
     "John Hammond": "UCVeW9qkBjo3zosnqUbG7CFw",
     "Low Level": "UC6biysICWOJ-C3P4Tyeggzg",
     "Live Overflow": "UClcE-kVhqyiHCcjYwcpfj9w",
+    "Off By One Security": "UCc8gr33-DyCZ6gAmqdcyzgA",
+    "PC Security": "UCKGe7fZ_S788Jaspxg-_5Sg",
+    "IppSec": "UCa6eh7gCkpPo5XXUDfygQQA",
+    "NahamSec": "UCCZDt7MuC3Hzs6IH4xODLBw",
+    "Nir Lichtman": "UCAMu6Dso0ENoNm3sKpQsy0g",
+    "Security Weekly - A CRA Resource": "UCg--XBjJ50a9tUhTKXVPiqg",
 }
 
 VIDEOS_LIST_URL="https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
