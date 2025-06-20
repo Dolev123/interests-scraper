@@ -1,16 +1,14 @@
 # NOTE: scraping is based on the following article: https://james.ashford.phd/2023/02/13/how-to-scrape-mastodon-timelines-using-python-and-pandas/
 
 import requests
-import json
 from loguru import logger
 from bs4 import BeautifulSoup 
 from tqdm import tqdm
 from datetime import timezone, datetime
-from time import struct_time
 
 from source import Source, Group, Row
 
-SERVERS_AND_USERS = {
+SERVERS_AND_USERS : dict[str, list[str]] = {
     "cyberplace.social": [
         "@GossiTheDog",
     ],
@@ -41,7 +39,6 @@ def _create_time_filter():
     def _time_filter(date: str) -> bool:
         dt = datetime.fromisoformat(date)
         return abs((now - dt).days) < 5
-        pass
     return _time_filter
     
 def find_user_id(server: str, user: str) -> str:
@@ -50,7 +47,7 @@ def find_user_id(server: str, user: str) -> str:
         logger.error(f"Failed getting user's ID with error {resp.status_code}")
         return ""
 
-    obj = resp.json()
+    obj : dict = resp.json()
     return obj["id"]
 
 def get_toot_data(toot: dict) -> str:
@@ -97,7 +94,6 @@ def list_user_toots(server: str, user: str) -> list:
     return toots
 
 def list_toots():
-    toots = []
     accounts = []
     _time_filter = _create_time_filter()
     for server, users in tqdm(SERVERS_AND_USERS.items(), desc="Mastodon"):

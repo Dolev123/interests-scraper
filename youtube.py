@@ -3,11 +3,10 @@ import xmltodict
 from tqdm import tqdm
 from loguru import logger
 from datetime import timezone, datetime
-from time import struct_time
 
 from source import Row, Group, Source
 
-CHANNELS = {
+CHANNELS : dict[str,str] = {
     "John Hammond": "UCVeW9qkBjo3zosnqUbG7CFw",
     "Low Level": "UC6biysICWOJ-C3P4Tyeggzg",
     "Live Overflow": "UClcE-kVhqyiHCcjYwcpfj9w",
@@ -26,7 +25,6 @@ def _create_time_filter():
     def _time_filter(date: str) -> bool:
         dt = datetime.fromisoformat(date)
         return abs((now - dt).days) < 5
-        pass
     return _time_filter
 
 def list_channel_videos(channel_id: str) -> list:
@@ -39,7 +37,6 @@ def list_channel_videos(channel_id: str) -> list:
     entries = obj["feed"]["entry"]
     videos = []
     for entry in entries:
-        
         videos.append((
             entry["title"], 
             entry["published"], 

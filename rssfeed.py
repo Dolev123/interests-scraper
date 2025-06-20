@@ -5,7 +5,7 @@ from time import struct_time
 
 from source import Row, Group, Source
 
-FEEDS = [
+FEEDS : list[str] = [
     "https://www.kaspersky.co.uk/blog/feed/",
     "https://blog.cloudflare.com/rss/",
     "https://hackaday.com/blog/feed/",
@@ -27,6 +27,10 @@ FEEDS = [
     "http://feeds.feedburner.com/eset/blog?format=xml",
     "https://www.bitdefender.com/nuxt/api/en-us/rss/labs/",
     "https://feeds.feedburner.com/threatintelligence/pvexyqv7v0v",
+    "https://googleprojectzero.blogspot.com/feeds/posts/default",
+    "https://www.zerodayinitiative.com/blog/?format=rss",
+    "https://www.zerodayinitiative.com/rss/upcoming/",
+    "https://www.zerodayinitiative.com/rss/published/",
 ]
 
 def _create_time_filter():
@@ -34,7 +38,6 @@ def _create_time_filter():
     def _time_filter(date: struct_time) -> bool:
         dt = datetime(date.tm_year, date.tm_mon, date.tm_mday)
         return abs((now - dt).days) < 2
-        pass
     return _time_filter
 
 def _check_feeds_are_valid():

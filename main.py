@@ -1,10 +1,11 @@
 import jinja2
 
+from source import Source
 import youtube
 import mastodon
 import rssfeed
 
-def create_report(sources: list):
+def create_report(sources: list[Source]):
     enviroment = jinja2.Environment(loader=jinja2.FileSystemLoader("./"))
     template = enviroment.get_template("results.html.tpl")
     content = template.render(
@@ -12,7 +13,7 @@ def create_report(sources: list):
     )
 
     with open("report.html", "w", encoding="utf-8") as f:
-        f.write(content)
+        _ = f.write(content)
         print("Written Report!")
 
 def main():
