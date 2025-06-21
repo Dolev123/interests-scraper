@@ -31,13 +31,22 @@ FEEDS : list[str] = [
     "https://www.zerodayinitiative.com/blog/?format=rss",
     "https://www.zerodayinitiative.com/rss/upcoming/",
     "https://www.zerodayinitiative.com/rss/published/",
+    "https://blog.talosintelligence.com/feed/",
+    "https://blog.sekoia.io/feed/",
+    "https://cybersecurityventures.com/feed/",
+    "https://lifeboat.com/blog/category/cybercrime-malcode/feed",
+    "https://feeds.feedblitz.com/GDataSecurityBlog-EN&x=1",
+    "https://ccgnludelhi.wordpress.com/feed/",
+    "https://www.cybertrace.com.au/blog/feed/",
+    "https://www.malwarebytes.com/blog/feed/index.xml",
+    "https://intel471.com/blog/feed",
 ]
 
 def _create_time_filter():
     now = datetime.now()
     def _time_filter(date: struct_time) -> bool:
         dt = datetime(date.tm_year, date.tm_mon, date.tm_mday)
-        return abs((now - dt).days) < 2
+        return abs((now - dt).days) < 100
     return _time_filter
 
 def _check_feeds_are_valid():
