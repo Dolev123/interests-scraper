@@ -15,7 +15,7 @@
     <div style="padding-left: 10%; padding-right: 10%;">
     <h2 style="text-decoration: underline;">{{source.name}}</h2>
     {% for group in source.groups %}
-	<p><b>{{group.name}}</b></p>
+	<p><b>{{group.name}}</b> {% if group.desc != "" %}<i>({{group.desc}})</i> {% endif %}</p>
 	<table>
 	{% for row in group.rows %}
 	    <tr>

@@ -7,6 +7,7 @@ class Row(BaseModel):
 
 class Group(BaseModel):
     name: str
+    desc: str = ""
     rows: list[Row] = []
 
 class Source(BaseModel):

@@ -1,3 +1,4 @@
+from re import sub
 import feedparser
 from tqdm import tqdm
 from datetime import datetime
@@ -40,13 +41,32 @@ FEEDS : list[str] = [
     "https://www.cybertrace.com.au/blog/feed/",
     "https://www.malwarebytes.com/blog/feed/index.xml",
     "https://intel471.com/blog/feed",
+    "https://newsroom.trendmicro.com/cyberthreat?pagetemplate=rss",
+    "https://newsroom.trendmicro.com/education?pagetemplate=rss",
+    "https://newsroom.trendmicro.com/news-releases?pagetemplate=rss&category=787",
+    "https://www.reversinglabs.com/blog/rss.xml",
+    "https://checkmarx.com/feed/?post_type=zero-post",
+    "https://checkmarx.com/feed/",
+    "https://citizenlab.ca/category/research/feed",
+    "https://citizenlab.ca/feed",
+    "https://cloudblog.withgoogle.com/rss/",
+    "https://blog.google/rss/",
+    "https://zimperium.com/blog/rss.xml",
+    "https://promon.io/security-news/rss.xml",
+    "https://cyble.com/blog/feed/",
+    "https://www.securonix.com/blog/feed/",
+    "https://securityscorecard.com/blog/feed/",
+    "https://securityscorecard.com/resources/research/feed",
+    "https://blog.sekoia.io/feed",
+    "https://blog.trailofbits.com/index.xml",
 ]
+
 
 def _create_time_filter():
     now = datetime.now()
     def _time_filter(date: struct_time) -> bool:
         dt = datetime(date.tm_year, date.tm_mon, date.tm_mday)
-        return abs((now - dt).days) < 100
+        return abs((now - dt).days) < 2
     return _time_filter
 
 def _check_feeds_are_valid():
@@ -64,9 +84,13 @@ def _check_feeds_are_valid():
 def list_feeds():
     feeds = []
     _time_filter = _create_time_filter()
+
     for feed_url in tqdm(FEEDS, desc="RSS Feeds"):
         parsed = feedparser.parse(feed_url)
-        feed = Group(name=parsed.feed.title)
+        subtitle = parsed.feed.get('subtitle', '')
+        if len(subtitle) > 80 or subtitle == parsed.feed.title:
+            subtitle = feed_url.split("/")[2]
+        feed = Group(name=f"{parsed.feed.title}", desc=subtitle)
         for entry in parsed.entries:
             if not _time_filter(entry.published_parsed):
                 break
@@ -76,7 +100,6 @@ def list_feeds():
                 url=entry.link
             ))
             if len(feed.rows) >= 10:
-                # continue
                 break
         if len(feed.rows):
             feeds.append(feed)

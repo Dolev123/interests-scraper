@@ -21,6 +21,7 @@ SERVERS_AND_USERS : dict[str, list[str]] = {
         "@hackndo",
         "@imlordofthering",
         "@sphynx",
+        "@trailofbits",
     ],
     "mas.to": [
         "@secwolf404",
