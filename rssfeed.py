@@ -59,6 +59,12 @@ FEEDS : list[str] = [
     "https://securityscorecard.com/resources/research/feed",
     "https://blog.sekoia.io/feed",
     "https://blog.trailofbits.com/index.xml",
+    "https://blog.redteam-pentesting.de/posts/index.xml",
+    "https://talkback.sh/resources/feed/",
+    "https://00f.net/atom.xml",
+    # TODO:: make a seperate source, because they don't have timestamps
+    # "https://bughunters.google.com/feed/en", 
+    "https://defensescoop.com/feed/",
 ]
 
 
@@ -73,11 +79,13 @@ def _check_feeds_are_valid():
     for feed_url in FEEDS:
         try:
             parsed = feedparser.parse(feed_url)
-            print(f"Title: {parsed.feed.title}:")
+            title = parsed.feed.get("title", feed_url.split("/")[2])
+            print(f"Title: {title}:")
             for entry in parsed.entries:
                 print(f"{entry.title} \t|\t{entry.link}")
         except Exception as e:
             print(f"[!] Failed to parse {feed_url}")
+            print(f"\t[!] Error: {e}")
         finally:
             print()
 
@@ -87,12 +95,14 @@ def list_feeds():
 
     for feed_url in tqdm(FEEDS, desc="RSS Feeds"):
         parsed = feedparser.parse(feed_url)
+        title = parsed.feed.get("title", feed_url.split("/")[2])
         subtitle = parsed.feed.get('subtitle', '')
-        if len(subtitle) > 80 or subtitle == parsed.feed.title:
+        if len(subtitle) > 80 or subtitle == title:
             subtitle = feed_url.split("/")[2]
-        feed = Group(name=f"{parsed.feed.title}", desc=subtitle)
+        feed = Group(name=title, desc=subtitle)
         for entry in parsed.entries:
-            if not _time_filter(entry.published_parsed):
+            entry_time = entry.get("published_parsed") or entry.get("updated_parsed")
+            if not _time_filter(entry_time):
                 break
             feed.rows.append(Row(
                 title=entry.title,
