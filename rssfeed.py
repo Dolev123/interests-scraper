@@ -65,8 +65,16 @@ FEEDS : list[str] = [
     # TODO:: make a seperate source, because they don't have timestamps
     # "https://bughunters.google.com/feed/en", 
     "https://defensescoop.com/feed/",
+    "https://blog.nns.ee/index.xml",
+    "https://norvig.com/rss-feed.xml",
+    "https://margin.re/blog/rss/",
+    "https://cocomelonc.github.io/feed.xml",
+    "https://thorstenball.com/atom.xml",
+    "https://blog.apnic.net/feed/",
+    "https://specterops.io/blog/category/research/feed/",
+    "https://labs.watchtowr.com/feed/",
+    "https://rss.app/feeds/Ho4gIVhEXQwiIoOx.xml",
 ]
-
 
 def _create_time_filter():
     now = datetime.now()
@@ -77,10 +85,13 @@ def _create_time_filter():
 
 def _check_feeds_are_valid():
     for feed_url in FEEDS:
+        if not feed_url.startswith("https://"):
+            print(f"[!] Warning, feed url does not start with 'https://' : {feed_url}\n")
+            continue
         try:
             parsed = feedparser.parse(feed_url)
             title = parsed.feed.get("title", feed_url.split("/")[2])
-            print(f"Title: {title}:")
+            print(f"## Title: {title} ##")
             for entry in parsed.entries:
                 print(f"{entry.title} \t|\t{entry.link}")
         except Exception as e:

@@ -29,6 +29,9 @@ SERVERS_AND_USERS : dict[str, list[str]] = {
     "fosstodon.org": [
         "@atoponce"
     ],
+    "mathstodon.xyz": [
+        "@tao",
+    ],
 }
 
 ACCOUNTS_LOOKUP_URL = "https://{server}/api/v1/accounts/lookup"
