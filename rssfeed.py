@@ -1,8 +1,10 @@
 from re import sub
 import feedparser
 from tqdm import tqdm
+from tqdm.asyncio import tqdm as async_tqdm
 from datetime import datetime
 from time import struct_time
+import asyncio
 
 from source import Row, Group, Source
 
@@ -100,11 +102,8 @@ def _check_feeds_are_valid():
         finally:
             print()
 
-def list_feeds():
-    feeds = []
-    _time_filter = _create_time_filter()
-
-    for feed_url in tqdm(FEEDS, desc="RSS Feeds"):
+async def _parse_feed(feed_url, _time_filter) -> Group:
+    try:
         parsed = feedparser.parse(feed_url)
         title = parsed.feed.get("title", feed_url.split("/")[2])
         subtitle = parsed.feed.get('subtitle', '')
@@ -122,9 +121,29 @@ def list_feeds():
             ))
             if len(feed.rows) >= 10:
                 break
-        if len(feed.rows):
-            feeds.append(feed)
+        return feed
+    except Exception as e:
+        print(f"[!] Error for {feed_url} : {e}")
+        return None
+
+async def _list_feeds():
+    feeds = []
+    _time_filter = _create_time_filter()
+
+    coros = []
+    for feed_url in tqdm(FEEDS, desc="RSS Feeds"):
+        coros.append(_parse_feed(feed_url, _time_filter))
+
+    for coro in async_tqdm.as_completed(coros):
+            feed = await coro
+            
+            if feed and len(feed.rows):
+                feeds.append(feed)
+
     return Source(name="RSS Feeds", groups=feeds)
+
+def list_feeds():
+    return asyncio.run(_list_feeds())
 
 if __name__ == '__main__':
     _check_feeds_are_valid()
