@@ -76,7 +76,8 @@ FEEDS : list[str] = [
     "https://specterops.io/blog/category/research/feed/",
     "https://labs.watchtowr.com/feed/",
     "https://rss.app/feeds/Ho4gIVhEXQwiIoOx.xml",
-    "https://feeds.fireside.fm/securityconversations/rss"
+    "https://feeds.fireside.fm/securityconversations/rss",
+    "https://newsletter.defensetech-week.com/feed/",
 ]
 
 def _create_time_filter():
