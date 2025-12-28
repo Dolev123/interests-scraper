@@ -76,6 +76,7 @@ FEEDS : list[str] = [
     "https://specterops.io/blog/category/research/feed/",
     "https://labs.watchtowr.com/feed/",
     "https://rss.app/feeds/Ho4gIVhEXQwiIoOx.xml",
+    "https://feeds.fireside.fm/securityconversations/rss"
 ]
 
 def _create_time_filter():
@@ -96,6 +97,7 @@ def _check_feeds_are_valid():
             print(f"## Title: {title} ##")
             for entry in parsed.entries:
                 print(f"{entry.title} \t|\t{entry.link}")
+            # from IPython.terminal.embed import embed; embed() # NOTE:: for debug only, recomment when done
         except Exception as e:
             print(f"[!] Failed to parse {feed_url}")
             print(f"\t[!] Error: {e}")
@@ -140,6 +142,7 @@ async def _list_feeds():
             if feed and len(feed.rows):
                 feeds.append(feed)
 
+    feeds.sort(key=lambda x: x.name)
     return Source(name="RSS Feeds", groups=feeds)
 
 def list_feeds():
