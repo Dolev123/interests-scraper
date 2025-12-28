@@ -9,6 +9,7 @@
 	padding-right: 10px;
     }
 </style>
+<meta charset="UTF-8">
 </head>
 <body>
 {% for source in sources %}
