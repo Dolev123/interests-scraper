@@ -17,6 +17,7 @@ CHANNELS : dict[str,str] = {
     "Nir Lichtman": "UCAMu6Dso0ENoNm3sKpQsy0g",
     "Security Weekly - A CRA Resource": "UCg--XBjJ50a9tUhTKXVPiqg",
     "Checkmarx Zero": "UCZbxYOLa6M90BTvA6yYawLw",
+    "TheShyHat": "UCNqIidYyWi9Zbr48VV1Xr_g",
 }
 
 VIDEOS_LIST_URL="https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
