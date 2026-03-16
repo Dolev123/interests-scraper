@@ -78,6 +78,12 @@ FEEDS : list[str] = [
     "https://rss.app/feeds/Ho4gIVhEXQwiIoOx.xml",
     "https://feeds.fireside.fm/securityconversations/rss",
     "https://newsletter.defensetech-week.com/feed/",
+    "https://lyra.horse/blog/posts/index.xml",
+    "https://www.cyberthreatalliance.org/blog/feed",
+    "https://pentesterlab.com/blog/feed",
+    "https://loopholelabs.io/blog/rss.xml",
+    "https://liveoverflow.com/topic/blog/feed/",
+    "https://seclists.org/rss/oss-sec.rss",
 ]
 
 def _create_time_filter():
