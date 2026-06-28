@@ -1,0 +1,17 @@
+FROM alpine:latest
+
+RUN apk add vim git python3
+
+RUN adduser -u 1001 -D user
+USER 1001
+RUN mkdir /home/user/interests-scraper
+WORKDIR /home/user/interests-scraper
+
+COPY internal/  /home/user/interests-scraper/internal
+COPY scraper/  /home/user/interests-scraper/scraper
+COPY __init__.py/  /home/user/interests-scraper/__init__.py
+RUN python -m venv scraper-env && . scraper-env/bin/activate && pip install -r scraper/requirements.txt
+
+EXPOSE 8080/tcp
+ENV UI_PORT=8080 PSQL_HOST='' PSQL_DB=scraper PSQL_USER=u_writer PSQL_PASS='CHANGEME'
+CMD ["/bin/sh", "-c", ". scraper-env/bin/activate ; python3 scraper/scraper.py"]

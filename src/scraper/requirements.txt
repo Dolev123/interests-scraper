@@ -1,0 +1,6 @@
+BeautifulSoup4
+requests
+pydantic
+psycopg[binary,pool]
+feedparser
+colorama
