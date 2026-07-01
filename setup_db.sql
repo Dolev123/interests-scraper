@@ -53,7 +53,8 @@ CREATE TABLE scrapes (
 	published 		timestamp NOT NULL,
 	source_id 		UUID references sources(id)
 );
-ALTER TABLE scrapes ADD CONSTRAINT scrape_source_and_title UNIQUE (title, source_id);
+-- created some problems because 2 feeds referenced the same article url
+-- ALTER TABLE scrapes ADD CONSTRAINT scrape_source_and_title UNIQUE (title, source_id);
 
 -- ### Global Functions ### --
 
