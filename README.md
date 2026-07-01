@@ -1,6 +1,7 @@
 # Interests Scraper
 
 A very basic and (now less) low effort scraper for (mostly) cybersecurity related stuff.  
+A running instance can be found on [feed.ethx3.com](https://feed.ethx3.com).
 
 ## Architecture
 
@@ -36,7 +37,7 @@ sudo docker run -t -e PSQL_HOST=$DB_IP -e PSQL_PASS=CHANGEME --entrypoint='scrap
 For installing as a service (using debian/ubuntu with systemd) without a docker:
 ```sh
 # installing scraper service
-chmod +x create_scraper_service.sh && sudo ./create_scraper_service.sh
+chmod +x create_scraper_service.sh && sudo ./create_scraper_service.sh <PSQL_HOST> <PSQL_PASS> <TIMER>
 # installing website service
-chmod +x create_website_service.sh && sudo ./create_website_service.sh
+chmod +x create_website_service.sh && sudo ./create_website_service.sh <PSQL_HOST> <PSQL_PASS>
 ```
