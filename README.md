@@ -9,6 +9,8 @@ There are 3 parts to the project:
 - __Website__ - A python HTTP server to generate report of what was scraped.
 - __Scraper__ - A script to go over all sources and scrape them.
 
+Accessing the website will return the report for the current date, unless date specified with the following URL: `http://host/yyyy-mm-dd/`.  
+
 ## Usage
 
 There are docker files provided for both `scraper` and `website` parts, and `postgres:14.23-alpine3.24` is recommecnded for the DB image. 
@@ -31,4 +33,10 @@ sudo docker run -t -d -e PSQL_HOST=$DB_IP -e PSQL_PASS=CHANGEME scraper
 sudo docker run -t -e PSQL_HOST=$DB_IP -e PSQL_PASS=CHANGEME --entrypoint='scraper/run_loop.sh' scraper
 ```
 
-Accessing the website will return the report for the current date, unless date specified with the following URL: `http://host/yyyy-mm-dd/`.  
+For installing as a service (using debian/ubuntu with systemd) without a docker:
+```sh
+# installing scraper service
+chmod +x create_scraper_service.sh && sudo ./create_scraper_service.sh
+# installing website service
+chmod +x create_website_service.sh && sudo ./create_website_service.sh
+```
