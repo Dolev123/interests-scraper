@@ -28,15 +28,15 @@ CREATE TYPE source_type AS ENUM (
 
 CREATE TABLE sources (
 	id				UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-	name			varchar(64) NOT NULL,
+	name			TEXT NOT NULL,
 	type			source_type NOT NULL DEFAULT 'rss'
 --	Maybe add description (used currently for rss feeds)
---	description		varchar(128) NOT NULL,
+--	description		TEXT NOT NULL,
 );
 
 CREATE TABLE sources_rss (
 	id UUID 		references sources(id),
-	feed_url 		varchar(128) NOT NULL UNIQUE
+	feed_url 		TEXT NOT NULL UNIQUE
 );
 CREATE TABLE sources_youtube (
 	id UUID 		references sources(id),
@@ -44,13 +44,13 @@ CREATE TABLE sources_youtube (
 );
 CREATE TABLE sources_mastodon (
 	id UUID 		references sources(id),
-	server 			varchar(64) NOT NULL -- multiple users per serevr -> not UNIQUE
+	server 			TEXT NOT NULL -- multiple users per serevr -> not UNIQUE
 );
 
 CREATE TABLE scrapes (
 	id				UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-	title 			varchar(256) NOT NULL,
-	link 			varchar(256) NOT NULL,
+	title 			TEXT NOT NULL,
+	link 			TEXT NOT NULL,
 	published 		timestamp NOT NULL,
 	source_id 		UUID references sources(id)
 );
@@ -111,13 +111,13 @@ PREPARE generate_ordered_report(timestamp) AS
 -- ## Inserting new scrape
 
 -- This is a naive approach, mainly for testing
-PREPARE insert_scrape(varchar(256), varchar(256), timestamp, UUID) AS
+PREPARE insert_scrape(TEXT, TEXT, timestamp, UUID) AS
 	INSERT INTO scrapes (title, link, published, source_id)
 	VALUES ($1, $2, $3, $4)
 ;
 
 -- Ensure updating of published (maybe should change to be unique on link and source or only link)
-CREATE OR REPLACE FUNCTION insert_scrape(title varchar(256), link varchar(256), published timestamp, source_id UUID) RETURNS UUID
+CREATE OR REPLACE FUNCTION insert_scrape(title TEXT, link TEXT, published timestamp, source_id UUID) RETURNS UUID
 	LANGUAGE SQL
 	AS $$
 	INSERT INTO scrapes (title, link, published, source_id)
@@ -135,7 +135,7 @@ CREATE OR REPLACE FUNCTION insert_scrape(title varchar(256), link varchar(256), 
 
 -- ## RSS
 
-CREATE OR REPLACE FUNCTION new_rss_source(name varchar(64), feed_url varchar(128)) RETURNS uuid
+CREATE OR REPLACE FUNCTION new_rss_source(name TEXT, feed_url TEXT) RETURNS uuid
 	LANGUAGE SQL
 	AS $$
 	    WITH new_source AS (
@@ -151,7 +151,7 @@ SELECT new_rss_source("", ""); -- UUID:
 
 -- ## Youtube
 
-CREATE OR REPLACE FUNCTION new_youtube_source(name varchar(64), channel_id varchar(32)) RETURNS uuid
+CREATE OR REPLACE FUNCTION new_youtube_source(name TEXT, channel_id varchar(32)) RETURNS uuid
 	LANGUAGE SQL
 	AS $$
 	    WITH new_source AS (
@@ -167,7 +167,7 @@ SELECT new_youtube_source("", ""); -- UUID:
 
 -- ## Mastodon
 
-CREATE OR REPLACE FUNCTION new_mastodon_source(name varchar(64), server varchar(64)) RETURNS uuid
+CREATE OR REPLACE FUNCTION new_mastodon_source(name TEXT, server TEXT) RETURNS uuid
 	LANGUAGE SQL
 	AS $$
 	    WITH new_source AS (
